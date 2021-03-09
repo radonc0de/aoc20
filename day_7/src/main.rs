@@ -23,15 +23,16 @@ fn main(){
         i += 1;
     }
 
-    println!("If I'm not fucking retarded, then the number of bags that can eventually contain a shiny gold bag is {}.", counts - 1);
+    println!("The bags that can eventually hold a shiny gold bag is {}.", counts - 1);
+    println!("Shiny gold bag must contain {} bags.", total_bags(*index.get("shiny gold").unwrap(), &dictionary, &index));
 
 }
 
-fn dictionary_builder(raw: Vec<&str>) -> (Vec<Vec<Bag>>, HashMap<&str, u32>) {
+fn dictionary_builder(raw: Vec<&str>) -> (Vec<Vec<Bag>>, HashMap<&str, usize>) {
     let mut dictionary: Vec<Vec<Bag>> = Vec::new();
     let mut index = HashMap::new();
     
-    let mut loop_index: u32 = 0;
+    let mut loop_index: usize = 0;
     for i in raw {
         let mut term: Vec<Bag> = Vec::new();
 
@@ -62,20 +63,18 @@ fn dictionary_builder(raw: Vec<&str>) -> (Vec<Vec<Bag>>, HashMap<&str, u32>) {
     
 }
 
-fn bag_check(dict_index: u32, dictionary: &Vec<Vec<Bag>>, index: &HashMap<&str, u32>) -> bool {
-    //let index = *index_ref;
-    let dic_index = dict_index as usize;
+fn bag_check(dic_index: usize, dictionary: &Vec<Vec<Bag>>, index: &HashMap<&str, usize>) -> bool {
     let shiny_gold = *index.get("shiny gold").unwrap();
 
     if dictionary[dic_index][0].color == "no other" {
         false
-    }else if dict_index == shiny_gold {
+    }else if dic_index == shiny_gold {
         true
     }else{
         for i in &dictionary[dic_index]{
             let color: &str  = &i.color;
-            let where_to_find = *index.get(&color).unwrap();
-            let contains_shiny_gold = bag_check(where_to_find, &dictionary, &index); 
+            let location = *index.get(&color).unwrap();
+            let contains_shiny_gold = bag_check(location, &dictionary, &index); 
             if contains_shiny_gold {
                 return true;
             }
@@ -85,3 +84,17 @@ fn bag_check(dict_index: u32, dictionary: &Vec<Vec<Bag>>, index: &HashMap<&str, 
     
 }
 
+fn total_bags(dic_index: usize, dictionary: &Vec<Vec<Bag>>, index: &HashMap<&str, usize>) -> u32 {
+    let mut bags: u32 = 0;
+    for i in &dictionary[dic_index] {
+        let color: &str  = &i.color;
+        let count = &i.count;
+        bags += count;
+        if color != "no other" {
+            let location = *index.get(&color).unwrap();
+            bags +=  count * total_bags(location, &dictionary, &index);
+        }
+    }
+
+    bags
+}
