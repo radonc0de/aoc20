@@ -52,36 +52,20 @@ fn gen_passport(lines: Vec<&str>) -> HashMap<&str, &str>{
 fn check_passport(passport: HashMap<&str, &str>) -> bool {
     let mut valid = true;
     match passport.get("byr") {
-        Some(x) =>  {
-            let val = x.parse::<u32>().unwrap();
-            if val < 1920 || val > 2002 {
-                valid = false;
-            }
-        },
+        Some(x) => println!("{}", x),
         None => valid = false,
         _ => println!("Oops. Just shid myself"),
     } 
     match passport.get("iyr") {
-        Some(x) => {
-            let val = x.parse::<u32>().unwrap();
-            if val < 2010 || val > 2020 {
-                valid = false;
-            }
-        },
+        Some(x) => println!("{}", x),
         None => valid = false,
         _ => println!("Oops. Just shid myself"),
     }
     match passport.get("eyr") {
-        Some(x) => { 
-            let val = x.parse::<u32>().unwrap();
-            if val < 2020 || val > 2030 {
-                valid = false;
-            }
-        },
+        Some(x) => println!("{}", x),
         None => valid = false,
         _ => println!("Oops. Just shid myself"),
     }
-    //done
     match passport.get("hgt") {
         Some(x) => println!("{}", x),
         None => valid = false,
@@ -93,11 +77,7 @@ fn check_passport(passport: HashMap<&str, &str>) -> bool {
         _ => println!("Oops. Just shid myself"),
     }
     match passport.get("ecl") {
-        Some(x) => {
-            if x != &"amb" && x != &"blu" && x != &"brn" && x != &"gry" && x != &"grn" && x != &"hzl" && x != &"oth"{
-                valid = false;
-            }
-        },
+        Some(x) => println!("{}", x),
         None => valid = false,
         _ => println!("Oops. Just shid myself"),
     }
