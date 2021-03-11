@@ -13,7 +13,6 @@ fn main() {
 
     for i in raw_passports {
         if i == "" {
-            println!("--");
             entry += 1;
             passports.push(Vec::new());
         }else{
@@ -27,7 +26,6 @@ fn main() {
         //gen_passport(i);
         if check_passport(gen_passport(i)) {
             validpass += 1;
-            println!("Valid one found");
         }
     }
 
@@ -59,7 +57,6 @@ fn check_passport(passport: HashMap<&str, &str>) -> bool {
             }
         },
         None => valid = false,
-        _ => println!("Oops. Just shid myself"),
     } 
     match passport.get("iyr") {
         Some(x) => {
@@ -69,7 +66,6 @@ fn check_passport(passport: HashMap<&str, &str>) -> bool {
             }
         },
         None => valid = false,
-        _ => println!("Oops. Just shid myself"),
     }
     match passport.get("eyr") {
         Some(x) => { 
@@ -79,19 +75,43 @@ fn check_passport(passport: HashMap<&str, &str>) -> bool {
             }
         },
         None => valid = false,
-        _ => println!("Oops. Just shid myself"),
     }
-    //done
     match passport.get("hgt") {
-        Some(x) => println!("{}", x),
+        Some(x) => {
+            if x.contains("cm"){
+                let hgt = x.split("cm").collect::<Vec<&str>>();
+                let hgt = hgt[0].parse::<u32>().unwrap();
+                if hgt < 150 || hgt > 193 {
+                    valid = false;
+                }
+            }else if x.contains("in"){
+                let hgt = x.split("in").collect::<Vec<&str>>();
+                let hgt = hgt[0].parse::<u32>().unwrap();
+                if hgt < 59 || hgt > 76 {
+                    valid = false;
+                }
+            }else{
+                valid = false;
+            } 
+        },
         None => valid = false,
-        _ => println!("Oops. Just shid myself"),
     }
+    //above works
     match passport.get("hcl") {
-        Some(x) => println!("{}", x),
+        Some(x) => {
+            let chars: Vec<char> = x.chars().collect();
+            if chars.len() != 7 {
+                valid = false;
+            }
+            for c in chars {
+                if !c.is_digit(16) && c != '#' {
+                    valid = false;
+                }
+            }
+        },
         None => valid = false,
-        _ => println!("Oops. Just shid myself"),
     }
+    //below works
     match passport.get("ecl") {
         Some(x) => {
             if x != &"amb" && x != &"blu" && x != &"brn" && x != &"gry" && x != &"grn" && x != &"hzl" && x != &"oth"{
@@ -99,14 +119,28 @@ fn check_passport(passport: HashMap<&str, &str>) -> bool {
             }
         },
         None => valid = false,
-        _ => println!("Oops. Just shid myself"),
     }
     match passport.get("pid") {
-        Some(x) => println!("{}", x),
+        Some(x) => {
+            match x.parse::<u64>() {
+                Ok(y) => {
+                    if y > 999999999 || y < 000000000 {
+                        valid = false;
+                    }
+                },
+                Err(_e) => valid = false,
+            }
+            let chars: Vec<char> = x.chars().collect();
+            if chars.len() != 9 {
+                valid = false;
+            }
+        },
         None => valid = false,
-        _ => println!("Oops. Just shid myself"),
     }
-
+    
+    if !valid {
+        println!("Invalid passport: {:?}", passport);
+    }
     valid
 
 }
