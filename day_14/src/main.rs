@@ -97,28 +97,37 @@ fn value_modifier(val: u64, bitmask: [Option<bool>; 36]) -> u64 {
 }
 
 fn index_builder(index: u64, bitmask: [Option<bool>; 36]) -> [Option<bool>; 36] {
-
+    # take u64
+    # convert u64 to [Option<bool; 36]
 }
 
 
-fn index_modifier(index_temp: [Option<bool>; 36]) -> u64 {
+fn index_modifier(index_temp: [Option<bool>; 36]) -> Vec<u64> {
     let mut indexes: Vec<[Option<bool>; 36]> = Vec::new();
     let mut iter = 0;
+    let mut unknowns = false;
     loop {
         if index_temp[iter].unwrap() = None {
+            unknowns = true;
             let mut with_zero = *&index_temp;
             with_zero[iter] = Some(False);
-            let indexes =  index_modifier(with_zero);
+            let indexes_zero =  index_modifier(with_zero);
             let mut with_one = *&index_temp;
             with_one[iter] = Some(True);
-            let indexes =  index_modifier(with_one);
+            let indexes_one =  index_modifier(with_one);
+            indexes 
             break;
         }
-    }}
+    }
+    if !unknowns {
+        indexes.push(index_temp - > decimal);
+    }
+    indexes
 }
 
-fn vector_add<T>(mut vec1: T, vec2: &T) -> T {
-    for i in vec2 {
+fn vector_add<T>(vec2: T, vec3: T) -> T {
+    let mut vec1 = vec2;
+    for i in vec3 {
         vec1.push(i);
     }
     vec1
