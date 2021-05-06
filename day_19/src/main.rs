@@ -3,7 +3,7 @@ use std::collections::HashMap;
 
 
 fn main() {
-    let mut rules: HashMap<u64, Vec<Vec<u64>>> = HashMap::new();
+    let mut rules: HashMap<u64, Vec<Vec<&str>>> = HashMap::new();
     
     let input = fs::read_to_string("input")
         .expect("Failed to read input");
@@ -25,22 +25,28 @@ fn main() {
         }
     }   
     //println!("{:?}", rules_messages[0]); 
+
+
     for i in &rules_messages[0] {
+        let mut rule_paths: Vec<Vec<&str>> = Vec::new();
         let index_rule = i.split(":").collect::<Vec<&str>>();
         //println!("{:?}", index_rule);
-        //let index = parse index_rule[0] into u64 to use as hashmap key;
+        let index = index_rule[0].parse::<u64>().unwrap();
         let paths = index_rule[1].split("|").collect::<Vec<&str>>();
         for j in paths {
             let nums = j.split_whitespace().collect::<Vec<&str>>();
-            println!("Options: {:?}", nums);
+            rule_paths.push(nums); 
+            //println!("Options: {:?}", nums);
             
         }
+        rules.insert(index, rule_paths);
     }
     let mut messages: Vec<&str> = Vec::new();
     for i in &rules_messages[1] {
         //println!("{}", i);        
         messages.push(i);
     }
+    println!("{:?}", rules);
 
     //println!("{:?}", messages);
 
